@@ -1,80 +1,57 @@
+import React from 'react';
 import "./App.css";
-import {TonConnectButton} from "@tonconnect/ui-react";
-import {useMainContract} from "./hooks/useMainContract";
-import {useTonConnect} from "./hooks/useTonConnect.ts";
-import {fromNano} from "@ton/ton";
-import WebApp from "@twa-dev/sdk";
+import { TonConnectButton } from "@tonconnect/ui-react";
+import { useMinterBCContract } from "./hooks/useMinterBCContract";
+import { useTonConnect } from "./hooks/useTonConnect.ts";
+import { fromNano } from "@ton/ton";
+import BuySellComponent from './components/BuySellComponent';
+import ChartComponent from './components/ChartComponent';
 
 function App() {
     const {
         contract_address,
-        counter_value,
-        contract_balance,
-        sendIncrement,
-        sendDeposit,
-        sendWithdrawalRequest,
-    } = useMainContract();
+        total_supply,
+        admin_address,
+        user_jetton_wallet,
+        getJettonWalletAddress,
+    } = useMinterBCContract();
 
-    const {connected} = useTonConnect();
-
-    const showAlert = () => {
-        WebApp.showAlert("Ale alert!");
-    }
+    const { connected } = useTonConnect();
 
     return (
-        <div>
-            <div>
-                <TonConnectButton/>
+        <div className="Container">
+            <div className="Header">
+                <div className="TonConnectButtonWrapper">
+                    <TonConnectButton />
+                </div>
             </div>
-            <div>
+            <div className="Content">
                 <div className='Card'>
-                    <b>Platform {WebApp.platform}</b>
-                    <b>Our contract Address</b>
-                    <div className='Hint'>{contract_address?.slice(0, 30) + "..."}</div>
-                    <b>Our contract Balance</b>
-                    {contract_balance && (
-                        <div className='Hint'>{fromNano(contract_balance)}</div>
+                    <h2>Minter Contract</h2>
+                    <b>MinterBC Contract Address</b>
+                    <div className='Hint'>{contract_address}</div>
+                    <b>Total coins supply</b>
+                    {total_supply != null && (
+                        <div className='Hint'>{fromNano(total_supply)} DupCoins</div>
                     )}
                 </div>
-
-                <div className='Card'>
-                    <b>Counter Value</b>
-                    <div>{counter_value ?? "Loading..."}</div>
+                <div className="ChartAndTrade">
+                    <ChartComponent />
+                    <BuySellComponent />
                 </div>
-
-                <a onClick={() => {
-                    showAlert();
-                }}>
-                    Show alert!
-                </a>
-                <br/>
-                {connected && (
-                    <a onClick={() => {
-                        sendIncrement();
-                    }}>
-                        Increment by 5
-                    </a>
-                )}
-                <br/>
-                {connected && (
-                    <a onClick={() => {
-                        sendDeposit();
-                    }}>
-                        Send 1TON deposit
-                    </a>
-                )}
-                <br/>
-                {connected && (
-                    <a onClick={() => {
-                        sendWithdrawalRequest();
-                    }}>
-                        Send 1TON withdrawal request
-                    </a>
-                )}
+            </div>
+            <div className="Footer">
+                <div className='Card'>
+                    <b>Admin Address</b>
+                    <div>{admin_address?.toString() ?? "Loading..."}</div>
+                </div>
+                <div className='Card'>
+                    <b>My Jetton wallet address</b>
+                    <div>{user_jetton_wallet?.toString() ?? "Loading..."}</div>
+                </div>
             </div>
         </div>
     );
 }
 
 export default App;
-
