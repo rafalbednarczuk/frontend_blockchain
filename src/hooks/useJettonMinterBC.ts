@@ -15,7 +15,7 @@ export function useMinterBCContract() {
     const minterBCContract = useAsyncInitialize(async () => {
         if (!client) return;
         const contract = new JettonMinterBC(
-            Address.parse("kQCtukwgAAUvpIHIO_YsVKPOjvM0FndNDC1DyfjeLDEhvtmu") // DUPCoin 22
+            Address.parse("kQAs18GaQer47k2tDbL_CCQqOq5roicZPOkvbj6LBUuuohKb") // DUPCoin 23
         );
         return client.open(contract) as OpenedContract<JettonMinterBC>;
     }, [client]);
