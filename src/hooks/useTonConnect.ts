@@ -1,12 +1,13 @@
 import {useTonConnectUI} from '@tonconnect/ui-react';
-import {address, Address, Sender, SenderArguments} from '@ton/core';
+import {Sender, SenderArguments} from '@ton/core';
 
-export function useTonConnect(): { sender: Sender; connected: boolean, address: Address | null} {
+export function useTonConnect(): { sender: Sender; connected: boolean } {
     const [tonConnectUI] = useTonConnectUI();
+
     return {
         sender: {
             send: async (args: SenderArguments) => {
-                tonConnectUI.sendTransaction({
+                await tonConnectUI.sendTransaction({
                     messages: [
                         {
                             address: args.to.toString(),
@@ -19,6 +20,5 @@ export function useTonConnect(): { sender: Sender; connected: boolean, address: 
             },
         },
         connected: tonConnectUI.connected,
-        address: tonConnectUI.account?.address == null ? null : Address.parseRaw(tonConnectUI.account?.address),
     };
 }
