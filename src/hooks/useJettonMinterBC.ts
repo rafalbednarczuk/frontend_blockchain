@@ -15,7 +15,7 @@ export function useMinterBCContract() {
     const minterBCContract = useAsyncInitialize(async () => {
         if (!client) return;
         const contract = new JettonMinterBC(
-            Address.parse("kQBf7lKe67XXtKMd696fCBVArmUACR5kjsGDQ5wudZ1Q2ZXs") // DUPCoin 15
+            Address.parse("kQCtukwgAAUvpIHIO_YsVKPOjvM0FndNDC1DyfjeLDEhvtmu") // DUPCoin 22
         );
         return client.open(contract) as OpenedContract<JettonMinterBC>;
     }, [client]);
@@ -34,10 +34,11 @@ export function useMinterBCContract() {
     }, [minterBCContract]);
 
     return {
+        minterBCContract,
         minterAddress: minterBCContract?.address.toString(),
         ...contractData,
         buyCoins: () => {
-            return minterBCContract?.sendBuy(sender, toNano("0.1"));
+            return minterBCContract?.sendBuy(sender, toNano("0.3"));
         },
     };
 }

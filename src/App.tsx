@@ -3,6 +3,7 @@ import {TonConnectButton} from "@tonconnect/ui-react";
 import {useMinterBCContract} from "./hooks/useJettonMinterBC.ts";
 import {fromNano} from "@ton/core";
 import {useTonConnect} from "./hooks/useTonConnect.ts";
+import {useJettonWalletContract} from "./hooks/useJettonWallet.ts";
 
 function App() {
     const {
@@ -10,6 +11,10 @@ function App() {
         totalSupply,
         buyCoins,
     } = useMinterBCContract();
+
+    const {
+        sellCoins,
+    } = useJettonWalletContract();
 
     const {connected} = useTonConnect();
     return (
@@ -25,7 +30,6 @@ function App() {
                     <div
                         className='Hint'>{totalSupply == null ? "Loading" : (fromNano(totalSupply.toString())) + " DUPCoins"}</div>
                 </div>
-
                 {connected && (
                     <a
                         onClick={() => {
@@ -33,6 +37,16 @@ function App() {
                         }}
                     >
                         BuyCoins
+                    </a>
+                )}
+                <br/> {/* Add this line break */}
+                {connected && (
+                    <a
+                        onClick={() => {
+                            sellCoins();
+                        }}
+                    >
+                        SellCoins
                     </a>
                 )}
             </div>

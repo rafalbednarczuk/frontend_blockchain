@@ -62,12 +62,12 @@ export class JettonMinterBC implements Contract {
     async sendBuy(provider: ContractProvider, via: Sender, value: bigint) {
         //buy_coins OP code
         const body = beginCell()
-            .storeUint(0x23bafc01,32)
-            .storeUint(0,64)
-            .storeAddress(via.address)
+            .storeUint(0x23bafc01, 32)
+            .storeUint(0, 64)
+            .storeAddress(this.address) // send excess back to minter
             .storeMaybeRef(beginCell().endCell())
-            .storeCoins(1n)
-            .storeMaybeRef(beginCell().endCell())
+            .storeCoins(1) // forward only 1 gram not give a lot back to buyer
+            .storeMaybeRef(beginCell().endCell()) // it's required
             .endCell();
         await provider.internal(via, {
             sendMode: SendMode.PAY_GAS_SEPARATELY,
