@@ -25,17 +25,11 @@ export function useJettonWalletContract() {
     return {
         minterAddress: minterBCContract?.address.toString(),
         sellCoins: () => {
-            if (walletContract == null || minterBCContract == null) return;
-            return walletContract.sendTransfer(sender,
+            if (walletContract == null || minterBCContract == null || sender.address == undefined) return;
+            return walletContract.sendSellJettons(sender,
                 toNano("0.1"),
-                toNano("1000"),
+                toNano("3213.1312"),
                 minterBCContract.address,
-                sender.address!!,
-                beginCell().endCell(),
-                //Forward amount have to be higher than 1 nano TON, otherwise the message isn't going to be delivered as no gas
-                //Otherwise. Skipped: true, Skip reason: cskip_no_gas
-                toNano("0.03"),
-                beginCell().endCell(),
             );
         },
     };

@@ -1,8 +1,9 @@
-import {useTonConnectUI} from '@tonconnect/ui-react';
+import {useTonAddress, useTonConnectUI} from '@tonconnect/ui-react';
 import {Address, Sender, SenderArguments} from '@ton/core';
 
 export function useTonConnect(): { sender: Sender; connected: boolean } {
     const [tonConnectUI] = useTonConnectUI();
+    const userAddress = useTonAddress();
 
     return {
         sender: {
@@ -18,6 +19,7 @@ export function useTonConnect(): { sender: Sender; connected: boolean } {
                     validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes for user to approve
                 });
             },
+            address: userAddress == "" ? undefined : Address.parse(userAddress),
         },
         connected: tonConnectUI.connected,
     };
