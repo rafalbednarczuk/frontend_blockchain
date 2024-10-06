@@ -7,10 +7,10 @@ import {useMinterBCContract} from "./useJettonMinterBC.ts";
 import {JettonWallet} from "../contracts/JettonWallet.ts";
 import {useTonAddress} from "@tonconnect/ui-react";
 
-export function useJettonWalletContract() {
+export function useJettonWalletContract(address: string) {
     const client = useTonClient();
     const {sender} = useTonConnect();
-    const {minterBCContract} = useMinterBCContract()
+    const {minterBCContract} = useMinterBCContract(address)
     const userAddress = useTonAddress();
 
     const walletContract = useAsyncInitialize(async () => {
@@ -33,4 +33,3 @@ export function useJettonWalletContract() {
         },
     };
 }
-

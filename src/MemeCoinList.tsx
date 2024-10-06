@@ -18,8 +18,8 @@ const generateMemeCoins = (count: number) => {
 
     return [
         {
-            address: "EQCT8hY7-23e8lLlmDbnL5kOOhj7qlzfrkp14mwlU509OKir",
-            name: "DUPCoin",
+            address: "kQDZ8UHtEg8QelfX8CZD1j63INW1FazL5jJWE_LqxCNwL0DV",
+            name: "DUPCoin30",
             logo: "https://i1.sndcdn.com/artworks-WL8TnfYG5XrRCMRM-5IjLig-t500x500.jpg"
         },
         ...fakeCoins

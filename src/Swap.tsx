@@ -2,6 +2,7 @@ import React, {useState, ChangeEvent} from 'react';
 import {useTonConnect} from "./hooks/useTonConnect";
 import {useJettonWalletContract} from "./hooks/useJettonWallet";
 import {ArrowDownUp, RefreshCw} from 'lucide-react';
+import {useParams} from 'react-router-dom';
 import './Swap.css';
 
 interface SwapProps {
@@ -9,13 +10,15 @@ interface SwapProps {
 }
 
 const Swap: React.FC<SwapProps> = ({buyCoins}) => {
+    const {address} = useParams<{ address: string }>();
     const {connected} = useTonConnect();
-    const {sellCoins} = useJettonWalletContract();
+    const {sellCoins} = useJettonWalletContract(address || "");
     const [sendAmount, setSendAmount] = useState<string>("");
     const [receiveAmount, setReceiveAmount] = useState<string>("");
     const [isSendingTon, setIsSendingTon] = useState<boolean>(true);
 
     const TON_TO_DUPC_RATE = 100000;
+    const TON_TO_USD_RATE = 5.30;
 
     const handleSwap = () => {
         if (isSendingTon) {
@@ -53,6 +56,16 @@ const Swap: React.FC<SwapProps> = ({buyCoins}) => {
         return isTon ? parsedAmount.toFixed(8) : parsedAmount.toLocaleString('en-US', {maximumFractionDigits: 0});
     };
 
+    const calculateUSDValue = (amount: string, isTon: boolean): string => {
+        if (!amount) return "0.00";
+        const parsedAmount = parseFloat(amount);
+        if (isTon) {
+            return (parsedAmount * TON_TO_USD_RATE).toFixed(2);
+        } else {
+            return ((parsedAmount / TON_TO_DUPC_RATE) * TON_TO_USD_RATE).toFixed(2);
+        }
+    };
+
     return (
         <div className="swap-card">
             <h2 className="swap-title">Swap tokens</h2>
@@ -61,7 +74,7 @@ const Swap: React.FC<SwapProps> = ({buyCoins}) => {
                 <div className="swap-input">
                     <div className="swap-input-header">
                         <span>You send</span>
-                        <span>≈ {sendAmount ? `$${(parseFloat(sendAmount) * (isSendingTon ? 2 : 0.00002)).toFixed(2)}` : "$0.00"}</span>
+                        <span>≈ ${calculateUSDValue(sendAmount, isSendingTon)}</span>
                     </div>
                     <div className="swap-input-body">
                         <input
@@ -90,7 +103,7 @@ const Swap: React.FC<SwapProps> = ({buyCoins}) => {
                 <div className="swap-input">
                     <div className="swap-input-header">
                         <span>You receive</span>
-                        <span>≈ {receiveAmount ? `$${(parseFloat(receiveAmount) * (isSendingTon ? 0.00002 : 2)).toFixed(2)}` : "$0.00"}</span>
+                        <span>≈ ${calculateUSDValue(receiveAmount, !isSendingTon)}</span>
                     </div>
                     <div className="swap-input-body">
                         <input
