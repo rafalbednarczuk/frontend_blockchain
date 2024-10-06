@@ -14,7 +14,6 @@ export function useJettonWalletContract() {
     const userAddress = useTonAddress();
 
     const walletContract = useAsyncInitialize(async () => {
-        console.log(`sender address:${userAddress}`);
         if (client == null || minterBCContract == null || userAddress == null || userAddress == "") return;
         const walletAddress = await minterBCContract.getWalletAddress(Address.parse(userAddress));
         const contract = new JettonWallet(walletAddress);
@@ -24,11 +23,11 @@ export function useJettonWalletContract() {
 
     return {
         minterAddress: minterBCContract?.address.toString(),
-        sellCoins: () => {
+        sellCoins: (amount: string) => {
             if (walletContract == null || minterBCContract == null || sender.address == undefined) return;
             return walletContract.sendSellJettons(sender,
                 toNano("0.1"),
-                toNano("3213.1312"),
+                toNano(amount),
                 minterBCContract.address,
             );
         },

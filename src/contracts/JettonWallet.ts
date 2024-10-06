@@ -103,7 +103,6 @@ export class JettonWallet implements Contract {
                           jetton_amount: bigint,
                           minter_address: Address,
     ) {
-        console.log(`via address: ${via.address}`);
         const body = beginCell().storeUint(0xf8a7ea5, 32).storeUint(0, 64) // op, queryId
             .storeCoins(jetton_amount)
             .storeAddress(minter_address) // Minter address

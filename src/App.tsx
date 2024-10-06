@@ -33,7 +33,7 @@ function App() {
                 {connected && (
                     <a
                         onClick={() => {
-                            buyCoins();
+                            buyCoins("1");
                         }}
                     >
                         BuyCoins
@@ -43,7 +43,7 @@ function App() {
                 {connected && (
                     <a
                         onClick={() => {
-                            sellCoins();
+                            sellCoins("5000");
                         }}
                     >
                         SellCoins
