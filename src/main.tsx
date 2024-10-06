@@ -1,5 +1,6 @@
-import React, { StrictMode } from 'react';
+import React, {StrictMode} from 'react';
 import ReactDOM from 'react-dom/client';
+import {BrowserRouter as Router} from 'react-router-dom';
 import App from './App';
 import './index.css';
 import {TonConnectUIProvider} from '@tonconnect/ui-react';
@@ -10,7 +11,9 @@ const manifestUrl = 'https://raw.githubusercontent.com/ton-community/tutorials/m
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <StrictMode>
         <TonConnectUIProvider manifestUrl={manifestUrl}>
-            <App/>
+            <Router>
+                <App/>
+            </Router>
         </TonConnectUIProvider>
     </StrictMode>
 )

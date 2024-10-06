@@ -1,0 +1,11 @@
+.memecoin-list {
+    padding: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.memecoin-list h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: white;
+}

@@ -5,7 +5,7 @@ import {useAsyncInitialize} from "./useAsyncInitialize";
 import {Address, OpenedContract, toNano} from "@ton/core";
 import {useTonConnect} from "./useTonConnect.ts";
 
-export function useMinterBCContract() {
+export function useMinterBCContract(address: string) {
     const client = useTonClient();
     const {sender} = useTonConnect();
     const [contractData, setContractData] = useState<null | {
@@ -15,10 +15,10 @@ export function useMinterBCContract() {
     const minterBCContract = useAsyncInitialize(async () => {
         if (!client) return;
         const contract = new JettonMinterBC(
-            Address.parse("EQCT8hY7-23e8lLlmDbnL5kOOhj7qlzfrkp14mwlU509OKir") // DUPCoin 25
+            Address.parse(address)
         );
         return client.open(contract) as OpenedContract<JettonMinterBC>;
-    }, [client]);
+    }, [client, address]);
 
     useEffect(() => {
         async function getValue() {
@@ -42,4 +42,3 @@ export function useMinterBCContract() {
         },
     };
 }
-

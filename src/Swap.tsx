@@ -1,14 +1,16 @@
 import React, {useState, ChangeEvent} from 'react';
-import {useMinterBCContract} from "./hooks/useJettonMinterBC";
-import {useJettonWalletContract} from "./hooks/useJettonWallet";
 import {useTonConnect} from "./hooks/useTonConnect";
+import {useJettonWalletContract} from "./hooks/useJettonWallet";
 import {ArrowDownUp, RefreshCw} from 'lucide-react';
 import './Swap.css';
 
-const Swap: React.FC = () => {
-    const {minterAddress, totalSupply, buyCoins} = useMinterBCContract();
-    const {sellCoins} = useJettonWalletContract();
+interface SwapProps {
+    buyCoins: (amount: string) => Promise<void> | undefined;
+}
+
+const Swap: React.FC<SwapProps> = ({buyCoins}) => {
     const {connected} = useTonConnect();
+    const {sellCoins} = useJettonWalletContract();
     const [sendAmount, setSendAmount] = useState<string>("");
     const [receiveAmount, setReceiveAmount] = useState<string>("");
     const [isSendingTon, setIsSendingTon] = useState<boolean>(true);
