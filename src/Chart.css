@@ -7,4 +7,6 @@
     flex: 2;
     padding: 20px;
     background-color: #1E222D;
+    border-radius: 12px;
+    overflow: hidden;
 }
