@@ -9,7 +9,8 @@ export function useMinterBCContract(address: string) {
     const client = useTonClient();
     const {sender} = useTonConnect();
     const [contractData, setContractData] = useState<null | {
-        totalSupply: bigint;
+        totalSupply: bigint | undefined;
+        bondingCurveAddress: Address | undefined,
     }>();
 
     const minterBCContract = useAsyncInitialize(async () => {
@@ -23,10 +24,24 @@ export function useMinterBCContract(address: string) {
     useEffect(() => {
         async function getValue() {
             if (!minterBCContract) return;
-            setContractData(null);
             const totalSupply = await minterBCContract.getTotalSupply();
             setContractData({
                 totalSupply: totalSupply,
+                bondingCurveAddress: contractData?.bondingCurveAddress,
+            });
+        }
+
+        getValue();
+    }, [minterBCContract]);
+
+
+    useEffect(() => {
+        async function getValue() {
+            if (!minterBCContract) return;
+            const bondingCurveAddress = await minterBCContract.getWalletAddress(minterBCContract.address);
+            setContractData({
+                totalSupply: contractData?.totalSupply,
+                bondingCurveAddress: bondingCurveAddress,
             });
         }
 

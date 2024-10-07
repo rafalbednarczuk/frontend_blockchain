@@ -1,0 +1,49 @@
+.jetton-holders-list {
+    margin-top: 20px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.jetton-holders-list h3 {
+    margin-bottom: 10px;
+    color: #ffffff;
+    font-size: 1.2em;
+}
+
+.jetton-holders-list ul {
+    list-style-type: none;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.jetton-holders-list li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #cccccc;
+    padding: 5px;
+    border-bottom: 1px solid #333;
+}
+
+.jetton-holders-list li:last-child {
+    border-bottom: none;
+}
+
+.jetton-holders-list .address {
+    font-family: monospace;
+    word-break: break-all;
+}
+
+.jetton-holders-list .balance {
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.jetton-holders-list .total-holders {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: left;
+}
