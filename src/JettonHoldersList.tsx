@@ -1,7 +1,8 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useMemo, useRef} from 'react';
 import {useParams} from 'react-router-dom';
 import {useHoldersList} from './hooks/useHoldersList';
 import {useMinterBCContract} from './hooks/useJettonMinterBC';
+import {useTonAddress} from '@tonconnect/ui-react';
 import './JettonHoldersList.css';
 import {JettonHolders} from "@ton-api/client";
 import {Address, fromNano} from "@ton/core";
@@ -9,15 +10,27 @@ import {Address, fromNano} from "@ton/core";
 const JettonHoldersList: React.FC = () => {
     const {address} = useParams<{ address: string }>();
     const {getTop100HoldersList} = useHoldersList(address || "");
-    const {totalSupply, bondingCurveAddress} = useMinterBCContract(address || "");
+    const {totalSupply, bondingCurveAddress, getJettonWalletAddress} = useMinterBCContract(address || "");
     const [holders, setHolders] = useState<JettonHolders | null>(null);
+    const userAddress = useTonAddress();
+    const [userJettonWalletAddress, setUserJettonWalletAddress] = useState<Address | null>(null);
+
+    const fetchingHolders = useRef(false);
+    const fetchingUserJettonWallet = useRef(false);
+    const prevUserAddress = useRef<string | null>(null);
 
     const fetchHolders = useCallback(async () => {
-        if (address) {
+        if (fetchingHolders.current || !address) return;
+        fetchingHolders.current = true;
+        try {
             const result = await getTop100HoldersList();
             if (result) {
                 setHolders(result);
             }
+        } catch (error) {
+            console.error('Error fetching holders:', error);
+        } finally {
+            fetchingHolders.current = false;
         }
     }, [address, getTop100HoldersList]);
 
@@ -25,47 +38,79 @@ const JettonHoldersList: React.FC = () => {
         fetchHolders();
     }, [fetchHolders]);
 
-    console.log(`holders:${holders}:totalSupply:${totalSupply}:bondingCurveAddress:${bondingCurveAddress}`);
+    useEffect(() => {
+        async function fetchUserJettonWalletAddress() {
+            if (fetchingUserJettonWallet.current || !userAddress || !getJettonWalletAddress) return;
+            if (userAddress === prevUserAddress.current) return;
+
+            fetchingUserJettonWallet.current = true;
+            prevUserAddress.current = userAddress;
+
+            try {
+                const jettonWalletAddress = await getJettonWalletAddress(userAddress);
+                setUserJettonWalletAddress(jettonWalletAddress || null);
+            } catch (error) {
+                console.error('Error fetching user jetton wallet address:', error);
+                setUserJettonWalletAddress(null);
+            } finally {
+                fetchingUserJettonWallet.current = false;
+            }
+        }
+
+        fetchUserJettonWalletAddress();
+    }, [userAddress, getJettonWalletAddress]);
+
+    const shortenAddress = useCallback((addr: string) => {
+        return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+    }, []);
+
+    const calculatePercentage = useCallback((balance: string) => {
+        if (totalSupply === undefined || totalSupply === 0n) return "0%";
+        const balanceBigInt = BigInt(balance);
+        return ((Number(fromNano(balanceBigInt)) / Number(fromNano(totalSupply))) * 100).toFixed(2) + "%";
+    }, [totalSupply]);
+
+    const formatAddress = useCallback((holderAddress: Address) => {
+        const addressString = holderAddress.toString();
+        const shortened = shortenAddress(addressString);
+        let label = '';
+
+        if (bondingCurveAddress && addressString === bondingCurveAddress.toString()) {
+            label += ' (Bonding Curve)';
+        }
+
+        if (userJettonWalletAddress && addressString === userJettonWalletAddress.toString()) {
+            label += ' (You)';
+        }
+
+        return shortened + label;
+    }, [shortenAddress, bondingCurveAddress, userJettonWalletAddress]);
+
+    const renderedHolders = useMemo(() => {
+        if (!holders) return null;
+        return holders.addresses.map((holder, index) => (
+            <li key={index}>
+                <a
+                    href={`https://testnet.tonviewer.com/${holder.address.toString()}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="address"
+                >
+                    {formatAddress(holder.address)}
+                </a>
+                <span className="balance">{calculatePercentage(holder.balance)}</span>
+            </li>
+        ));
+    }, [holders, formatAddress, calculatePercentage]);
+
     if (!holders || totalSupply === undefined || bondingCurveAddress === undefined) {
         return <div className="jetton-holders-list">Loading holders...</div>;
     }
 
-    const shortenAddress = (addr: string) => {
-        return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-    };
-
-    const calculatePercentage = (balance: string) => {
-        if (totalSupply === 0n) return "0%";
-        const balanceBigInt = BigInt(balance);
-        return ((Number(fromNano(balanceBigInt)) / Number(fromNano(totalSupply))) * 100).toFixed(2) + "%";
-    };
-
-    const formatAddress = (holderAddress: Address) => {
-        const addressString = holderAddress.toString();
-        const shortened = shortenAddress(addressString);
-        return bondingCurveAddress && addressString === bondingCurveAddress.toString()
-            ? `${shortened} (bonding curve)`
-            : shortened;
-    };
-
     return (
         <div className="jetton-holders-list">
             <p className="total-holders">Total Holders: {holders.total}</p>
-            <ul>
-                {holders.addresses.map((holder, index) => (
-                    <li key={index}>
-                        <a
-                            href={`https://testnet.tonviewer.com/${holder.address.toString()}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="address"
-                        >
-                            {formatAddress(holder.address)}
-                        </a>
-                        <span className="balance">{calculatePercentage(holder.balance)}</span>
-                    </li>
-                ))}
-            </ul>
+            <ul>{renderedHolders}</ul>
         </div>
     );
 };

@@ -43,5 +43,6 @@ export function useMinterBCContract(address: string) {
         buyCoins: (amount: string) => {
             return minterBCContract?.sendBuy(sender, toNano(amount));
         },
+        getJettonWalletAddress: (ownerAddress: string) => minterBCContract?.getWalletAddress(Address.parse(ownerAddress))
     };
 }
