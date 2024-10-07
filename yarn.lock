@@ -527,6 +527,18 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.24.0.tgz#0574d7e87b44ee8511d08cc7f914bcb802b70818"
   integrity sha512-fbMkAF7fufku0N2dE5TBXcNlg0pt0cJue4xBRE2Qc5Vqikxr4VCgKj/ht6SMdFcOacVA9rqF70APJ8RN/4vMJw==
 
+"@ton-api/client@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@ton-api/client/-/client-0.1.1.tgz#fc31ae6d102f179812693c9f4530943ebe005014"
+  integrity sha512-vtc9689IECIZ9z+42C1nRX+d9q7eZaO1qCsn22cuM38SC+e19eXWJakz949+tXMF+LWBYf9eFQKyskXAx0C4Cg==
+  dependencies:
+    core-js-pure "^3.38.0"
+
+"@ton-api/ton-adapter@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@ton-api/ton-adapter/-/ton-adapter-0.1.0.tgz#baeeda8523c46c478300842b207cc9e190d49d99"
+  integrity sha512-HhHSWbeXmkGDhz/xoR6sV7Al5UcerxEJaXGolrOCC7xmiuG7WoG8idhc3kQOEa3W7YtWq0NQeEnneB0nt5dxxw==
+
 "@ton/core@^0.58.1":
   version "0.58.1"
   resolved "https://registry.yarnpkg.com/@ton/core/-/core-0.58.1.tgz#f6f2ecef6a7149bcd23825bfbb454f116d54363f"
@@ -1095,6 +1107,11 @@ convert-source-map@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/convert-source-map/-/convert-source-map-2.0.0.tgz"
   integrity sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==
+
+core-js-pure@^3.38.0:
+  version "3.38.1"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.38.1.tgz#e8534062a54b7221344884ba9b52474be495ada3"
+  integrity sha512-BY8Etc1FZqdw1glX0XNOq2FDwfrg/VGqoZOZCdaL+UmdaqDwQwYXkMJT4t6In+zfEfOJDcM9T0KdbBeJg8KKCQ==
 
 core-util-is@~1.0.0:
   version "1.0.3"

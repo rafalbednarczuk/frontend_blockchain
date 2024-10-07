@@ -1,12 +1,16 @@
-import { getHttpEndpoint } from '@orbs-network/ton-access';
-import { TonClient } from '@ton/ton';
-import { useAsyncInitialize } from './useAsyncInitialize';
+import {useAsyncInitialize} from './useAsyncInitialize';
+import {useTonApiClient} from "./useTonApiClient.ts";
+import {ContractAdapter} from "@ton-api/ton-adapter";
 
 export function useTonClient() {
-  return useAsyncInitialize(
-    async () =>
-      new TonClient({
-        endpoint: await getHttpEndpoint({ network: 'testnet' }),
-      })
-  );
+    const tonApiClient = useTonApiClient();
+    return useAsyncInitialize(
+        async () => {
+            if (tonApiClient == null) {
+                return;
+            }
+            return new ContractAdapter(tonApiClient);
+        },
+        [tonApiClient]
+    );
 }
