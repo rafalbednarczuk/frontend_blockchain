@@ -18,6 +18,11 @@ const generateMemeCoins = (count: number) => {
 
     return [
         {
+            address: "kQCIby2FX-vf_n1hdXmdZ-U4rEWX1hW7JIUhftXOCylTswwg",
+            name: "NCOIN1",
+            logo: "https://as1.ftcdn.net/jpg/01/94/21/08/220_F_194210826_gXu9eWX8NSOzDovlnSqtITsCd9p3jJ8G.jpg"
+        },
+        {
             address: "kQDZ8UHtEg8QelfX8CZD1j63INW1FazL5jJWE_LqxCNwL0DV",
             name: "DUPCoin30",
             logo: "https://i1.sndcdn.com/artworks-WL8TnfYG5XrRCMRM-5IjLig-t500x500.jpg"
