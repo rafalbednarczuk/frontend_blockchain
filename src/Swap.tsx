@@ -4,15 +4,14 @@ import {useJettonWalletContract} from "./hooks/useJettonWallet";
 import {ArrowDownUp, RefreshCw} from 'lucide-react';
 import {useParams} from 'react-router-dom';
 import './Swap.css';
+import {useMinterBCContract} from "./hooks/useJettonMinterBC.ts";
 
-interface SwapProps {
-    buyCoins: (amount: string) => Promise<void> | undefined;
-}
 
-const Swap: React.FC<SwapProps> = ({buyCoins}) => {
+const Swap: React.FC = () => {
     const {address} = useParams<{ address: string }>();
     const {connected} = useTonConnect();
     const {sellCoins} = useJettonWalletContract(address || "");
+    const {buyCoins} = useMinterBCContract(address || "");
     const [sendAmount, setSendAmount] = useState<string>("");
     const [receiveAmount, setReceiveAmount] = useState<string>("");
     const [isSendingTon, setIsSendingTon] = useState<boolean>(true);

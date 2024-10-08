@@ -6,13 +6,9 @@ import Chart from './Chart';
 import Swap from './Swap';
 import MemeCoinList from './MemeCoinList';
 import JettonHoldersList from './JettonHoldersList';
-import {useMinterBCContract} from './hooks/useJettonMinterBC';
 import './App.css';
 
 function CoinView() {
-    const {address} = useParams<{ address: string }>();
-    const {buyCoins} = useMinterBCContract(address || "");
-
     return (
         <div className="content-wrapper">
             <div className="top-section">
@@ -21,7 +17,7 @@ function CoinView() {
                 </div>
                 <div className="right-section">
                     <div className="swap-container">
-                        <Swap buyCoins={buyCoins}/>
+                        <Swap/>
                     </div>
                     <div className="bottom-section">
                         <JettonHoldersList/>
