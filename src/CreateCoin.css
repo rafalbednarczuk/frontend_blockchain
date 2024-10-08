@@ -1,0 +1,94 @@
+.create-coin-container {
+    background-color: #2c2e33;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 600px; /* Increased from 500px */
+    width: 100%; /* Ensure it takes full width up to max-width */
+    margin: 0 auto;
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.create-coin-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    text-align: center;
+    color: white;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #a0a0a0;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    background-color: #3a3d45;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.form-group input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #0088cc;
+}
+
+.launch-button {
+    width: 100%;
+    margin-top: 24px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #0088cc;
+    color: white;
+    font-size: 16px;
+    transition: background-color 0.2s ease;
+}
+
+.launch-button:hover {
+    background-color: #006699;
+}
+
+.launch-button:disabled {
+    background-color: #4a4d55;
+    cursor: not-allowed;
+}
+
+.form-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #a0a0a0;
+}
+
+.form-info span {
+    display: flex;
+    align-items: center;
+}
+
+.form-info svg {
+    margin-left: 8px;
+}
+
+/* Ensure responsiveness */
+@media (max-width: 650px) {
+    .create-coin-container {
+        max-width: 100%;
+        margin: 0 10px; /* Add some margin on smaller screens */
+    }
+}

@@ -10,7 +10,7 @@ interface MemeCoinCardProps {
 
 const MemeCoinCard: React.FC<MemeCoinCardProps> = ({address, logo, name}) => {
     return (
-        <Link to={`/${address}`} className="memecoin-card">
+        <Link to={`/jetton/${address}`} className="memecoin-card">
             <img src={logo} alt={`${name} logo`} className="memecoin-logo"/>
             <div className="memecoin-info">
                 <h3>{name}</h3>

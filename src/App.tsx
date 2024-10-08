@@ -1,11 +1,12 @@
 import React from 'react';
 import {TonConnectButton} from "@tonconnect/ui-react";
 import {useParams, Route, Routes, Link, useLocation} from 'react-router-dom';
-import {ArrowLeft} from 'lucide-react';
+import {ArrowLeft, PlusCircle} from 'lucide-react';
 import Chart from './Chart';
 import Swap from './Swap';
 import MemeCoinList from './MemeCoinList';
 import JettonHoldersList from './JettonHoldersList';
+import CreateCoin from './CreateCoin';
 import './App.css';
 
 function CoinView() {
@@ -36,11 +37,17 @@ function App() {
             <header className="app-header">
                 <div className="header-left">
                     {location.pathname !== "/" && (
-                        <Link to="/" className="back-button">
+                        <Link to="/" className="header-button">
                             <ArrowLeft size={24}/>
                             Back
                         </Link>
                     )}
+                </div>
+                <div className="header-center">
+                    <Link to="/launch-coin" className="header-button">
+                        <PlusCircle size={24}/>
+                        Create your own jetton
+                    </Link>
                 </div>
                 <div className="header-right">
                     <TonConnectButton/>
@@ -49,7 +56,8 @@ function App() {
             <main className="app-main">
                 <Routes>
                     <Route path="/" element={<MemeCoinList/>}/>
-                    <Route path="/:address" element={<CoinView/>}/>
+                    <Route path="/jetton/:address" element={<CoinView/>}/>
+                    <Route path="/launch-coin" element={<CreateCoin/>}/>
                 </Routes>
             </main>
         </div>

@@ -24,30 +24,41 @@ body, #root {
     padding: 1rem;
 }
 
-.header-left {
+.header-left, .header-center, .header-right {
     flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.header-left {
+    justify-content: flex-start;
+}
+
+.header-center {
+    justify-content: center;
 }
 
 .header-right {
-    display: flex;
     justify-content: flex-end;
 }
 
-.back-button {
+.header-button {
     display: flex;
     align-items: center;
     color: #ffffff;
     text-decoration: none;
     font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
 }
 
-.back-button:hover {
-    opacity: 0.8;
+.header-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-.connect-button-container {
-    display: flex;
-    justify-content: flex-end;
+.header-button svg {
+    margin-right: 0.5rem;
 }
 
 .app-main {
@@ -77,14 +88,14 @@ body, #root {
     background-color: #1E222D;
     border-radius: 12px;
     padding: 20px;
-    min-width: 0; /* Allows flex item to shrink below its minimum content size */
+    min-width: 0;
 }
 
 .right-section {
     display: flex;
     flex-direction: column;
-    width: 400px; /* Fixed width as before */
-    flex-shrink: 0; /* Prevents the right section from shrinking */
+    width: 400px;
+    flex-shrink: 0;
     gap: 20px;
 }
 
@@ -94,7 +105,6 @@ body, #root {
     padding: 20px;
 }
 
-/* Responsive adjustments */
 @media (max-width: 1024px) {
     .top-section {
         flex-direction: column;
@@ -107,6 +117,23 @@ body, #root {
     }
 
     .right-section {
-        flex-shrink: 1; /* Allows shrinking on smaller screens */
+        flex-shrink: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .header-left, .header-center, .header-right {
+        justify-content: center;
+    }
+
+    .header-button {
+        width: 100%;
+        justify-content: center;
     }
 }
