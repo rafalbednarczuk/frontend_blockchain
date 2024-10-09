@@ -2,7 +2,7 @@
 type TokenAmount = number;
 type Price = number;
 
-interface CurveParameters {
+export interface CurveParameters {
     totalSupply: TokenAmount;
     startPrice: Price;
     endPrice: Price;
@@ -15,8 +15,8 @@ interface CurveParameters {
  * @param params - The parameters defining the bonding curve
  * @returns The current price of the token
  */
-function calculatePrice(tokensSold: TokenAmount, params: CurveParameters): Price {
-    const { totalSupply, startPrice, endPrice, curveExponent = 3 } = params;
+export function calculatePrice(tokensSold: TokenAmount, params: CurveParameters): Price {
+    const {totalSupply, startPrice, endPrice, curveExponent = 3} = params;
     const x: number = tokensSold / totalSupply;
     const priceRange: Price = endPrice - startPrice;
     return startPrice + priceRange * Math.pow(x, curveExponent);
@@ -29,12 +29,12 @@ function calculatePrice(tokensSold: TokenAmount, params: CurveParameters): Price
  * @param params - The parameters defining the bonding curve
  * @returns The cost of the purchase
  */
-function calculatePurchaseCost(
+export function calculatePurchaseCost(
     tokensToBuy: TokenAmount,
     currentTokensSold: TokenAmount,
     params: CurveParameters
 ): Price {
-    const { totalSupply, startPrice, endPrice, curveExponent = 3 } = params;
+    const {totalSupply, startPrice, endPrice, curveExponent = 3} = params;
     const x1: number = currentTokensSold / totalSupply;
     const x2: number = (currentTokensSold + tokensToBuy) / totalSupply;
     const priceRange: Price = endPrice - startPrice;
