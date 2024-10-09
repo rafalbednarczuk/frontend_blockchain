@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {TonConnectButton} from "@tonconnect/ui-react";
 import {useParams, Route, Routes, Link, useLocation} from 'react-router-dom';
 import {ArrowLeft, PlusCircle} from 'lucide-react';
@@ -7,9 +7,37 @@ import Swap from './Swap';
 import MemeCoinList from './MemeCoinList';
 import JettonHoldersList from './JettonHoldersList';
 import CreateCoin from './CreateCoin';
+import {useJettonMetadata} from './hooks/useJettonMetadata';
 import './App.css';
 
 function CoinView() {
+    const {address} = useParams<{ address: string }>();
+    const {getJsonMetadata} = useJettonMetadata(address || "");
+    const [metadata, setMetadata] = useState<any | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchMetadata = async () => {
+            if (!address) return;
+            try {
+                const data = await getJsonMetadata();
+                setMetadata(data);
+            } catch (err) {
+                console.error('Error fetching metadata:', err);
+                setError('Failed to load coin metadata');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMetadata();
+    }, [address, getJsonMetadata]);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+    if (!metadata) return <div>No metadata found</div>;
+
     return (
         <div className="content-wrapper">
             <div className="top-section">
@@ -18,7 +46,7 @@ function CoinView() {
                 </div>
                 <div className="right-section">
                     <div className="swap-container">
-                        <Swap/>
+                        <Swap metadata={metadata}/>
                     </div>
                     <div className="bottom-section">
                         <JettonHoldersList/>

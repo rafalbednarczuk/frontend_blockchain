@@ -5,9 +5,13 @@ import {ArrowDownUp, RefreshCw} from 'lucide-react';
 import {useParams} from 'react-router-dom';
 import './Swap.css';
 import {useMinterBCContract} from "./hooks/useJettonMinterBC.ts";
+import {JettonMetadata} from "@ton-api/client";
 
+interface SwapProps {
+    metadata: JettonMetadata;
+}
 
-const Swap: React.FC = () => {
+const Swap: React.FC<SwapProps> = ({metadata}) => {
     const {address} = useParams<{ address: string }>();
     const {connected} = useTonConnect();
     const {sellCoins} = useJettonWalletContract(address || "");
@@ -16,8 +20,8 @@ const Swap: React.FC = () => {
     const [receiveAmount, setReceiveAmount] = useState<string>("");
     const [isSendingTon, setIsSendingTon] = useState<boolean>(true);
 
-    const TON_TO_DUPC_RATE = 100000;
-    const TON_TO_USD_RATE = 5.30;
+    const TON_TO_TOKEN_RATE = 100000; // This should be dynamically fetched or calculated
+    const TON_TO_USD_RATE = 5.30; // This should be dynamically fetched
 
     const handleSwap = () => {
         if (isSendingTon) {
@@ -31,9 +35,9 @@ const Swap: React.FC = () => {
         if (!amount) return "";
         const parsedAmount = parseFloat(amount);
         if (fromTon) {
-            return (parsedAmount * TON_TO_DUPC_RATE).toFixed(0);
+            return (parsedAmount * TON_TO_TOKEN_RATE).toFixed(0);
         } else {
-            return (parsedAmount / TON_TO_DUPC_RATE).toFixed(8);
+            return (parsedAmount / TON_TO_TOKEN_RATE).toFixed(8);
         }
     };
 
@@ -52,7 +56,7 @@ const Swap: React.FC = () => {
     const formatAmount = (amount: string, isTon: boolean): string => {
         if (!amount) return "0";
         const parsedAmount = parseFloat(amount);
-        return isTon ? parsedAmount.toFixed(8) : parsedAmount.toLocaleString('en-US', {maximumFractionDigits: 0});
+        return isTon ? parsedAmount.toFixed(8) : parsedAmount.toLocaleString('en-US', {maximumFractionDigits: parseInt(metadata.decimals)});
     };
 
     const calculateUSDValue = (amount: string, isTon: boolean): string => {
@@ -61,7 +65,7 @@ const Swap: React.FC = () => {
         if (isTon) {
             return (parsedAmount * TON_TO_USD_RATE).toFixed(2);
         } else {
-            return ((parsedAmount / TON_TO_DUPC_RATE) * TON_TO_USD_RATE).toFixed(2);
+            return ((parsedAmount / TON_TO_TOKEN_RATE) * TON_TO_USD_RATE).toFixed(2);
         }
     };
 
@@ -85,12 +89,12 @@ const Swap: React.FC = () => {
                         <div className="token-selector">
                             <div className="token-icon-wrapper">
                                 <img
-                                    src={isSendingTon ? "https://ton.org/download/ton_symbol.png" : "https://i1.sndcdn.com/artworks-WL8TnfYG5XrRCMRM-5IjLig-t500x500.jpg"}
-                                    alt={isSendingTon ? "TON logo" : "DUPC logo"}
+                                    src={isSendingTon ? "https://ton.org/download/ton_symbol.png" : metadata.image || ""}
+                                    alt={isSendingTon ? "TON logo" : `${metadata.symbol} logo`}
                                     className="token-icon"
                                 />
                             </div>
-                            <span>{isSendingTon ? "TON" : "DUPC"}</span>
+                            <span>{isSendingTon ? "TON" : metadata.symbol}</span>
                         </div>
                     </div>
                 </div>
@@ -114,19 +118,19 @@ const Swap: React.FC = () => {
                         <div className="token-selector">
                             <div className="token-icon-wrapper">
                                 <img
-                                    src={isSendingTon ? "https://i1.sndcdn.com/artworks-WL8TnfYG5XrRCMRM-5IjLig-t500x500.jpg" : "https://ton.org/download/ton_symbol.png"}
-                                    alt={isSendingTon ? "DUPC logo" : "TON logo"}
+                                    src={isSendingTon ? metadata.image || "" : "https://ton.org/download/ton_symbol.png"}
+                                    alt={isSendingTon ? `${metadata.symbol} logo` : "TON logo"}
                                     className="token-icon"
                                 />
                             </div>
-                            <span>{isSendingTon ? "DUPC" : "TON"}</span>
+                            <span>{isSendingTon ? metadata.symbol : "TON"}</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div className="swap-info">
-                <span>1 {isSendingTon ? "TON" : "DUPC"} ≈ {isSendingTon ? TON_TO_DUPC_RATE.toLocaleString() : (1 / TON_TO_DUPC_RATE).toFixed(8)} {isSendingTon ? "DUPC" : "TON"}</span>
+                <span>1 {isSendingTon ? "TON" : metadata.symbol} ≈ {isSendingTon ? TON_TO_TOKEN_RATE.toLocaleString() : (1 / TON_TO_TOKEN_RATE).toFixed(8)} {isSendingTon ? metadata.symbol : "TON"}</span>
                 <RefreshCw size={16}/>
             </div>
 
