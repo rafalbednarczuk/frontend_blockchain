@@ -31,11 +31,24 @@ const MemeCoinList: React.FC = () => {
 
     const memeCoins = transactions
         .filter((tx: Transaction) => tx.outMsgs[0]?.destination?.address != null)
-        .map((tx: Transaction, index: number) => ({
-            address: tx.outMsgs[0]?.destination?.address?.toString() || '',
-            name: `MemeCoin${index + 1}`,
-            logo: `https://picsum.photos/200/200?random=${index + 1}`
-        }));
+        .map((tx: Transaction, index: number) => {
+            const initSlice = tx.outMsgs[0].init!.boc.beginParse();
+            const first2Bits = initSlice.loadUint(2);
+            const minterCode = initSlice.loadRef();
+            const minterData = initSlice.loadRef();
+            const minterDataSlice = minterData.beginParse();
+            const totalSupply = minterDataSlice.loadCoins();
+            const adminAddress = minterDataSlice.loadAddress();
+            const contentCellSlice = minterDataSlice.loadRef().beginParse();
+            const contentCellType = contentCellSlice.loadUint(8);
+            const stringTail = contentCellSlice.loadStringTail();
+            return ({
+                address: tx.outMsgs[0]?.destination?.address?.toString() || '',
+                name: `MemeCoin${index + 1}`,
+                logo: `https://picsum.photos/200/200?random=${index + 1}`,
+                contentUri: stringTail
+            });
+        });
 
     if (memeCoins.length === 0) return <div>No meme coins found</div>;
 
