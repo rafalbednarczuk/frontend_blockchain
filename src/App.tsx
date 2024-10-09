@@ -8,11 +8,13 @@ import MemeCoinList from './MemeCoinList';
 import JettonHoldersList from './JettonHoldersList';
 import CreateCoin from './CreateCoin';
 import {useJettonMetadata} from './hooks/useJettonMetadata';
+import {useMinterBCContract} from './hooks/useJettonMinterBC';
 import './App.css';
 
 function CoinView() {
     const {address} = useParams<{ address: string }>();
     const {getJsonMetadata} = useJettonMetadata(address || "");
+    const {totalSupply, bondingCurveAddress, getJettonWalletAddress} = useMinterBCContract(address || "");
     const [metadata, setMetadata] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -46,10 +48,17 @@ function CoinView() {
                 </div>
                 <div className="right-section">
                     <div className="swap-container">
-                        <Swap metadata={metadata}/>
+                        <Swap
+                            metadata={metadata}
+                            bondingCurveAddress={bondingCurveAddress}
+                        />
                     </div>
                     <div className="bottom-section">
-                        <JettonHoldersList/>
+                        <JettonHoldersList
+                            totalSupply={totalSupply}
+                            bondingCurveAddress={bondingCurveAddress}
+                            getJettonWalletAddress={getJettonWalletAddress}
+                        />
                     </div>
                 </div>
             </div>

@@ -1,16 +1,20 @@
 import React, {useEffect, useState, useCallback, useMemo, useRef} from 'react';
 import {useParams} from 'react-router-dom';
 import {useHoldersList} from './hooks/useHoldersList';
-import {useMinterBCContract} from './hooks/useJettonMinterBC';
 import {useTonAddress} from '@tonconnect/ui-react';
 import './JettonHoldersList.css';
 import {JettonHolders} from "@ton-api/client";
 import {Address, fromNano} from "@ton/core";
 
-const JettonHoldersList: React.FC = () => {
+interface JettonHoldersListProps {
+    totalSupply: bigint | undefined;
+    bondingCurveAddress: Address | undefined;
+    getJettonWalletAddress: ((ownerAddress: string) => Promise<Address> | undefined) | undefined;
+}
+
+const JettonHoldersList: React.FC<JettonHoldersListProps> = ({ totalSupply, bondingCurveAddress, getJettonWalletAddress }) => {
     const {address} = useParams<{ address: string }>();
     const {getTop100HoldersList} = useHoldersList(address || "");
-    const {totalSupply, bondingCurveAddress, getJettonWalletAddress} = useMinterBCContract(address || "");
     const [holders, setHolders] = useState<JettonHolders | null>(null);
     const userAddress = useTonAddress();
     const [userJettonWalletAddress, setUserJettonWalletAddress] = useState<Address | null>(null);

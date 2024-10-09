@@ -1,0 +1,57 @@
+// FunC version
+
+int calculate_price(int tokens_sold, int total_supply, int start_price, int end_price) {
+    int x = muldiv(tokens_sold, 1000000000, total_supply); ;; Simulating division with fixed-point arithmetic
+    int price_range = end_price - start_price;
+    int curve_exponent = 3;
+
+    ;; x^3 using repeated multiplication
+    int powered_x = muldiv(x, x, 1000000000);
+    powered_x = muldiv(powered_x, x, 1000000000);
+
+    return start_price + muldiv(price_range, powered_x, 1000000000);
+}
+
+int pow4(int x) {
+    int x2 = muldiv(x, x, 1000000000);
+    return muldiv(x2, x2, 1000000000);
+}
+
+int integral_at_x(int x, int start_price, int price_range) {
+    return muldiv(start_price, x, 1) + muldiv(price_range, pow4(x), 4000000000); ;; 4 * 10^9 for division by 4
+}
+
+int calculate_purchase_cost(int tokens_to_buy, int current_tokens_sold, int total_supply, int start_price, int end_price) {
+    int x1 = muldiv(current_tokens_sold, 1000000000, total_supply);
+    int x2 = muldiv(current_tokens_sold + tokens_to_buy, 1000000000, total_supply);
+    int price_range = end_price - start_price;
+
+    ;; Calculate the difference of the integrals
+    int integral_x2 = integral_at_x(x2, start_price, price_range);
+    int integral_x1 = integral_at_x(x1, start_price, price_range);
+    int cost = muldiv(total_supply, integral_x2 - integral_x1, 1000000000);
+    return cost;
+}
+
+// JavaScript version
+
+function calculatePrice(tokensSold, totalSupply, startPrice, endPrice) {
+    const x = tokensSold / totalSupply;
+    const priceRange = endPrice - startPrice;
+    const curveExponent = 3;
+    return startPrice + priceRange * Math.pow(x, curveExponent);
+}
+
+function calculatePurchaseCost(tokensToBuy, currentTokensSold, totalSupply, startPrice, endPrice) {
+    const x1 = currentTokensSold / totalSupply;
+    const x2 = (currentTokensSold + tokensToBuy) / totalSupply;
+    const priceRange = endPrice - startPrice;
+    const curveExponent = 3;
+
+    function integralAtX(x) {
+        return startPrice * x + (priceRange * Math.pow(x, curveExponent + 1)) / (curveExponent + 1);
+    }
+
+    const cost = totalSupply * (integralAtX(x2) - integralAtX(x1));
+    return cost;
+}
