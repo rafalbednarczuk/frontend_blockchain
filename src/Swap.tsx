@@ -12,14 +12,14 @@ import {Address} from "@ton/core";
 interface SwapProps {
     metadata: JettonMetadata;
     bondingCurveAddress: Address | undefined;
+    buyCoins: Function,
 }
 
-const Swap: React.FC<SwapProps> = ({metadata, bondingCurveAddress}) => {
+const Swap: React.FC<SwapProps> = ({metadata, bondingCurveAddress, buyCoins}) => {
     const {address} = useParams<{ address: string }>();
     const {connected} = useTonConnect();
     const userAddress = useTonAddress();
     const {sellCoins, getJettonBalance} = useJettonWalletContract(address || "", bondingCurveAddress?.toString() || "");
-    const {totalSupply, buyCoins, getJettonWalletAddress} = useMinterBCContract(address || "");
     const [sendAmount, setSendAmount] = useState<string>("");
     const [receiveAmount, setReceiveAmount] = useState<string>("");
     const [isSendingTon, setIsSendingTon] = useState<boolean>(true);

@@ -9,7 +9,7 @@ export function useCoinsList() {
 
     const getLastCoinsCreated = useCallback(async () => {
         if (tonApiClient == null) return null;
-        const coinLauncherAddress = Address.parse("kQAkEBhKCivwdHhNkEoJaYN8MWOzAPNr6HcWrW7nsPXooO_F");
+        const coinLauncherAddress = Address.parse("EQAkEBhKCivwdHhNkEoJaYN8MWOzAPNr6HcWrW7nsPXooFRP");
         const transactions = await tonApiClient.blockchain.getBlockchainAccountTransactions(coinLauncherAddress);
         return transactions.transactions
     }, [tonApiClient]);

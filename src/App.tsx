@@ -14,7 +14,7 @@ import './App.css';
 function CoinView() {
     const {address} = useParams<{ address: string }>();
     const {getJsonMetadata} = useJettonMetadata(address || "");
-    const {totalSupply, bondingCurveAddress, getJettonWalletAddress} = useMinterBCContract(address || "");
+    const {buyCoins, totalSupply, bondingCurveAddress, getJettonWalletAddress} = useMinterBCContract(address || "");
     const [metadata, setMetadata] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -51,6 +51,7 @@ function CoinView() {
                         <Swap
                             metadata={metadata}
                             bondingCurveAddress={bondingCurveAddress}
+                            buyCoins={buyCoins}
                         />
                     </div>
                     <div className="bottom-section">

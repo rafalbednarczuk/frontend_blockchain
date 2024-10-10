@@ -11,7 +11,7 @@ export function useCoinLauncherContract(address: string) {
 
     const coinLauncherContract = useAsyncInitialize(async () => {
         if (client == null) return;
-        const coinLauncherAddress = "kQAkEBhKCivwdHhNkEoJaYN8MWOzAPNr6HcWrW7nsPXooO_F";
+        const coinLauncherAddress = "EQAkEBhKCivwdHhNkEoJaYN8MWOzAPNr6HcWrW7nsPXooFRP";
         const contract = new CoinLauncher(Address.parse(coinLauncherAddress));
         return client.open(contract) as OpenedContract<CoinLauncher>;
     }, [client]);
