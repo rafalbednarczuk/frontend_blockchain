@@ -9,19 +9,15 @@ import {Address, fromNano} from "@ton/core";
 interface JettonHoldersListProps {
     totalSupply: bigint | undefined;
     bondingCurveAddress: Address | undefined;
-    getJettonWalletAddress: ((ownerAddress: string) => Promise<Address> | undefined) | undefined;
+    userJettonWalletAddress: Address | null;
 }
 
-const JettonHoldersList: React.FC<JettonHoldersListProps> = ({ totalSupply, bondingCurveAddress, getJettonWalletAddress }) => {
+const JettonHoldersList: React.FC<JettonHoldersListProps> = ({ totalSupply, bondingCurveAddress, userJettonWalletAddress }) => {
     const {address} = useParams<{ address: string }>();
     const {getTop100HoldersList} = useHoldersList(address || "");
     const [holders, setHolders] = useState<JettonHolders | null>(null);
-    const userAddress = useTonAddress();
-    const [userJettonWalletAddress, setUserJettonWalletAddress] = useState<Address | null>(null);
 
     const fetchingHolders = useRef(false);
-    const fetchingUserJettonWallet = useRef(false);
-    const prevUserAddress = useRef<string | null>(null);
 
     const fetchHolders = useCallback(async () => {
         if (fetchingHolders.current || !address) return;
@@ -42,27 +38,7 @@ const JettonHoldersList: React.FC<JettonHoldersListProps> = ({ totalSupply, bond
         fetchHolders();
     }, [fetchHolders]);
 
-    useEffect(() => {
-        async function fetchUserJettonWalletAddress() {
-            if (fetchingUserJettonWallet.current || !userAddress || !getJettonWalletAddress) return;
-            if (userAddress === prevUserAddress.current) return;
 
-            fetchingUserJettonWallet.current = true;
-            prevUserAddress.current = userAddress;
-
-            try {
-                const jettonWalletAddress = await getJettonWalletAddress(userAddress);
-                setUserJettonWalletAddress(jettonWalletAddress || null);
-            } catch (error) {
-                console.error('Error fetching user jetton wallet address:', error);
-                setUserJettonWalletAddress(null);
-            } finally {
-                fetchingUserJettonWallet.current = false;
-            }
-        }
-
-        fetchUserJettonWalletAddress();
-    }, [userAddress, getJettonWalletAddress]);
 
     const shortenAddress = useCallback((addr: string) => {
         return `${addr.slice(0, 6)}...${addr.slice(-4)}`;

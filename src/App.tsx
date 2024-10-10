@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {TonConnectButton} from "@tonconnect/ui-react";
+import React, {useState, useEffect, useRef} from 'react';
+import {TonConnectButton, useTonAddress} from "@tonconnect/ui-react";
 import {useParams, Route, Routes, Link, useLocation} from 'react-router-dom';
 import {ArrowLeft, PlusCircle} from 'lucide-react';
 import Chart from './Chart';
@@ -10,6 +10,7 @@ import CreateCoin from './CreateCoin';
 import {useJettonMetadata} from './hooks/useJettonMetadata';
 import {useMinterBCContract} from './hooks/useJettonMinterBC';
 import './App.css';
+import {Address} from "@ton/core";
 
 function CoinView() {
     const {address} = useParams<{ address: string }>();
@@ -18,7 +19,32 @@ function CoinView() {
     const [metadata, setMetadata] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const userAddress = useTonAddress();
+    const [userJettonWalletAddress, setUserJettonWalletAddress] = useState<Address | null>(null);
+    const fetchingUserJettonWallet = useRef(false);
+    const prevUserAddress = useRef<string | null>(null);
 
+    useEffect(() => {
+        async function fetchUserJettonWalletAddress() {
+            if (fetchingUserJettonWallet.current || !userAddress || !getJettonWalletAddress) return;
+            if (userAddress === prevUserAddress.current) return;
+
+            fetchingUserJettonWallet.current = true;
+            prevUserAddress.current = userAddress;
+
+            try {
+                const jettonWalletAddress = await getJettonWalletAddress(userAddress);
+                setUserJettonWalletAddress(jettonWalletAddress || null);
+            } catch (error) {
+                console.error('Error fetching user jetton wallet address:', error);
+                setUserJettonWalletAddress(null);
+            } finally {
+                fetchingUserJettonWallet.current = false;
+            }
+        }
+
+        fetchUserJettonWalletAddress();
+    }, [userAddress, getJettonWalletAddress]);
     useEffect(() => {
         const fetchMetadata = async () => {
             if (!address) return;
@@ -52,13 +78,14 @@ function CoinView() {
                             metadata={metadata}
                             bondingCurveAddress={bondingCurveAddress}
                             buyCoins={buyCoins}
+                            userJettonWalletAddress={userJettonWalletAddress}
                         />
                     </div>
                     <div className="bottom-section">
                         <JettonHoldersList
                             totalSupply={totalSupply}
                             bondingCurveAddress={bondingCurveAddress}
-                            getJettonWalletAddress={getJettonWalletAddress}
+                            userJettonWalletAddress={userJettonWalletAddress}
                         />
                     </div>
                 </div>

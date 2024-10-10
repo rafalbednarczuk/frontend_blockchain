@@ -17,7 +17,6 @@ export function useJettonWalletContract(minterAddress: string | null, address: s
 
     return {
         sellCoins: (amount: string) => {
-            console.log(`${walletContract} ${sender.address} ${minterAddress}`);
             if (walletContract == null || sender.address == undefined || minterAddress == null || minterAddress == "") return;
             return walletContract.sendSellJettons(sender,
                 toNano("0.1"),

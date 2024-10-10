@@ -12,14 +12,15 @@ import {Address} from "@ton/core";
 interface SwapProps {
     metadata: JettonMetadata;
     bondingCurveAddress: Address | undefined;
-    buyCoins: Function,
+    buyCoins: Function;
+    userJettonWalletAddress: Address | null;
 }
 
-const Swap: React.FC<SwapProps> = ({metadata, bondingCurveAddress, buyCoins}) => {
+const Swap: React.FC<SwapProps> = ({metadata, bondingCurveAddress, buyCoins, userJettonWalletAddress}) => {
     const {address} = useParams<{ address: string }>();
     const {connected} = useTonConnect();
-    const userAddress = useTonAddress();
-    const {sellCoins, getJettonBalance} = useJettonWalletContract(address || "", bondingCurveAddress?.toString() || "");
+    const {getJettonBalance} = useJettonWalletContract(address || "", bondingCurveAddress?.toString() || "");
+    const {sellCoins} = useJettonWalletContract(address || "", userJettonWalletAddress?.toString() || "");
     const [sendAmount, setSendAmount] = useState<string>("");
     const [receiveAmount, setReceiveAmount] = useState<string>("");
     const [isSendingTon, setIsSendingTon] = useState<boolean>(true);
