@@ -30,7 +30,7 @@ const CreateCoin: React.FC = () => {
             <h2 className="create-coin-title">Launch New Coin</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor="metadataUrl">Link to JSON metadata</label>
+                    <label htmlFor="metadataUrl">Link to JSON metadata. <br/>Example: https://gist.githubusercontent.com/rafalbednarczuk/4edf0b6b0d6d9d791b66fddc3233e539/raw/99093e86327431588eea4522898077b9d5908da2/gistfile1.txt</label>
                     <input
                         type="url"
                         id="metadataUrl"
