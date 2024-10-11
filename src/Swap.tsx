@@ -1,10 +1,8 @@
 import React, {useState, ChangeEvent, useEffect} from 'react';
 import {useTonConnect} from "./hooks/useTonConnect";
 import {useJettonWalletContract} from "./hooks/useJettonWallet";
-import {useMinterBCContract} from "./hooks/useJettonMinterBC";
 import {ArrowDownUp, RefreshCw} from 'lucide-react';
 import {useParams} from 'react-router-dom';
-import {useTonAddress} from "@tonconnect/ui-react";
 import './Swap.css';
 import {JettonMetadata} from "@ton-api/client";
 import {Address} from "@ton/core";
@@ -16,10 +14,10 @@ interface SwapProps {
     userJettonWalletAddress: Address | null;
 }
 
-const Swap: React.FC<SwapProps> = ({metadata, bondingCurveAddress, buyCoins, userJettonWalletAddress}) => {
+const Swap: React.FC<SwapProps> = ({metadata, buyCoins, userJettonWalletAddress}) => {
     const {address} = useParams<{ address: string }>();
     const {connected} = useTonConnect();
-    const {getJettonBalance} = useJettonWalletContract(address || "", bondingCurveAddress?.toString() || "");
+    console.log(`Swap.tsxUserJettonWalletAddress:${userJettonWalletAddress}`);
     const {sellCoins} = useJettonWalletContract(address || "", userJettonWalletAddress?.toString() || "");
     const [sendAmount, setSendAmount] = useState<string>("");
     const [receiveAmount, setReceiveAmount] = useState<string>("");
@@ -28,15 +26,6 @@ const Swap: React.FC<SwapProps> = ({metadata, bondingCurveAddress, buyCoins, use
     const TON_TO_TOKEN_RATE = 100000; // This should be dynamically fetched or calculated
     const TON_TO_USD_RATE = 5.30; // This should be dynamically fetched
 
-    useEffect(() => {
-        const fetchBondingCurveBalance = async () => {
-            if (bondingCurveAddress != null) {
-                const balance = await getJettonBalance();
-                console.log("Bonding Curve Balance:", balance ? balance.toString() : "0");
-            }
-        };
-        fetchBondingCurveBalance();
-    }, [bondingCurveAddress]);
 
     const handleSwap = () => {
         if (isSendingTon) {

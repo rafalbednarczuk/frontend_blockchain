@@ -1,9 +1,9 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, useCallback} from "react";
 import {JettonMinterBC} from "../contracts/JettonMinterBC";
 import {useTonClient} from "./useTonClient";
 import {useAsyncInitialize} from "./useAsyncInitialize";
 import {Address, OpenedContract, toNano} from "@ton/core";
-import {useTonConnect} from "./useTonConnect.ts";
+import {useTonConnect} from "./useTonConnect";
 
 export function useMinterBCContract(address: string) {
     const client = useTonClient();
@@ -35,14 +35,21 @@ export function useMinterBCContract(address: string) {
         getValue();
     }, [minterBCContract]);
 
+    const getJettonWalletAddress = useCallback(async (ownerAddress: string) => {
+        if (!minterBCContract) return null;
+        console.log(`getJettonWalletAddress called for: ${ownerAddress}`);
+        return minterBCContract.getWalletAddress(Address.parse(ownerAddress));
+    }, [minterBCContract]);
+
+    const buyCoins = useCallback((amount: string) => {
+        return minterBCContract?.sendBuy(sender, toNano(amount));
+    }, [minterBCContract, sender]);
 
     return {
+        ...contractData,
         minterBCContract,
         minterAddress: minterBCContract?.address.toString(),
-        ...contractData,
-        buyCoins: (amount: string) => {
-            return minterBCContract?.sendBuy(sender, toNano(amount));
-        },
-        getJettonWalletAddress: (ownerAddress: string) => minterBCContract?.getWalletAddress(Address.parse(ownerAddress)),
+        buyCoins,
+        getJettonWalletAddress,
     };
 }

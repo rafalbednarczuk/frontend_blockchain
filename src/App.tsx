@@ -1,7 +1,8 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {TonConnectButton, useTonAddress} from "@tonconnect/ui-react";
-import {useParams, Route, Routes, Link, useLocation, useNavigate} from 'react-router-dom';
+import {useParams, Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import {ArrowLeft, PlusCircle} from 'lucide-react';
+import {Address} from "@ton/core";
 import Chart from './Chart';
 import Swap from './Swap';
 import MemeCoinList from './MemeCoinList';
@@ -10,7 +11,6 @@ import CreateCoin from './CreateCoin';
 import {useJettonMetadata} from './hooks/useJettonMetadata';
 import {useMinterBCContract} from './hooks/useJettonMinterBC';
 import './App.css';
-import {Address} from "@ton/core";
 
 function CoinView() {
     const {address} = useParams<{ address: string }>();
@@ -21,33 +21,9 @@ function CoinView() {
     const [error, setError] = useState<string | null>(null);
     const userAddress = useTonAddress();
     const [userJettonWalletAddress, setUserJettonWalletAddress] = useState<Address | null>(null);
-    const fetchingUserJettonWallet = useRef(false);
-    const prevUserAddress = useRef<string | null>(null);
 
     useEffect(() => {
-        async function fetchUserJettonWalletAddress() {
-            if (fetchingUserJettonWallet.current || !userAddress || !getJettonWalletAddress) return;
-            if (userAddress === prevUserAddress.current) return;
-
-            fetchingUserJettonWallet.current = true;
-            prevUserAddress.current = userAddress;
-
-            try {
-                const jettonWalletAddress = await getJettonWalletAddress(userAddress);
-                setUserJettonWalletAddress(jettonWalletAddress || null);
-            } catch (error) {
-                console.error('Error fetching user jetton wallet address:', error);
-                setUserJettonWalletAddress(null);
-            } finally {
-                fetchingUserJettonWallet.current = false;
-            }
-        }
-
-        fetchUserJettonWalletAddress();
-    }, [userAddress, getJettonWalletAddress]);
-
-    useEffect(() => {
-        const fetchMetadata = async () => {
+        async function fetchMetadata() {
             if (!address) return;
             try {
                 const data = await getJsonMetadata();
@@ -58,10 +34,29 @@ function CoinView() {
             } finally {
                 setLoading(false);
             }
-        };
+        }
 
         fetchMetadata();
     }, [address, getJsonMetadata]);
+
+    useEffect(() => {
+        async function fetchUserJettonWalletAddress() {
+            if (!userAddress || !getJettonWalletAddress) return;
+            try {
+                console.log(`CoinView: Fetching jetton wallet for user address: ${userAddress}`);
+                const jettonWalletAddress = await getJettonWalletAddress(userAddress);
+                console.log(`CoinView: Fetched jetton wallet address: ${jettonWalletAddress}`);
+                if (jettonWalletAddress) {
+                    setUserJettonWalletAddress(jettonWalletAddress);
+                }
+            } catch (error) {
+                console.error('Error fetching user jetton wallet address:', error);
+                setUserJettonWalletAddress(null);
+            }
+        }
+
+        fetchUserJettonWalletAddress();
+    }, [userAddress, getJettonWalletAddress]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
