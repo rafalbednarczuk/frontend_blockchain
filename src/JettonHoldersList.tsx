@@ -71,7 +71,7 @@ const JettonHoldersList: React.FC<JettonHoldersListProps> = ({ totalSupply, bond
         return holders.addresses.map((holder, index) => (
             <li key={index}>
                 <a
-                    href={`https://testnet.tonviewer.com/${holder.address.toString()}`}
+                    href={`https://tonviewer.com/${holder.address.toString()}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="address"
