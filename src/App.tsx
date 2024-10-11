@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {TonConnectButton, useTonAddress} from "@tonconnect/ui-react";
-import {useParams, Route, Routes, Link, useLocation} from 'react-router-dom';
+import {useParams, Route, Routes, Link, useLocation, useNavigate} from 'react-router-dom';
 import {ArrowLeft, PlusCircle} from 'lucide-react';
 import Chart from './Chart';
 import Swap from './Swap';
@@ -45,6 +45,7 @@ function CoinView() {
 
         fetchUserJettonWalletAddress();
     }, [userAddress, getJettonWalletAddress]);
+
     useEffect(() => {
         const fetchMetadata = async () => {
             if (!address) return;
@@ -96,23 +97,34 @@ function CoinView() {
 
 function App() {
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const handleBackClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        navigate('/frontend_blockchain/');
+    };
+
+    const handleLaunchCoinClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        navigate('/frontend_blockchain/launch-coin');
+    };
 
     return (
         <div className="app-wrapper">
             <header className="app-header">
                 <div className="header-left">
-                    {location.pathname !== "/" && (
-                        <Link to="/" className="header-button">
+                    {location.pathname !== "/frontend_blockchain/" && (
+                        <button onClick={handleBackClick} className="header-button">
                             <ArrowLeft size={24}/>
                             Back
-                        </Link>
+                        </button>
                     )}
                 </div>
                 <div className="header-center">
-                    <Link to="/launch-coin" className="header-button">
+                    <button onClick={handleLaunchCoinClick} className="header-button">
                         <PlusCircle size={24}/>
                         Create your own jetton
-                    </Link>
+                    </button>
                 </div>
                 <div className="header-right">
                     <TonConnectButton/>
@@ -120,9 +132,9 @@ function App() {
             </header>
             <main className="app-main">
                 <Routes>
-                    <Route path="/" element={<MemeCoinList/>}/>
-                    <Route path="/jetton/:address" element={<CoinView/>}/>
-                    <Route path="/launch-coin" element={<CreateCoin/>}/>
+                    <Route path="/frontend_blockchain/" element={<MemeCoinList/>}/>
+                    <Route path="/frontend_blockchain/jetton/:address" element={<CoinView/>}/>
+                    <Route path="/frontend_blockchain/launch-coin" element={<CreateCoin/>}/>
                 </Routes>
             </main>
         </div>

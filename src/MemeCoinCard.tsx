@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import './MemeCoinCard.css';
+import './MemeCoinCard.css';  // Import the new CSS file
 
 interface MemeCoinCardProps {
     address: string;
@@ -45,12 +45,12 @@ const MemeCoinCard: React.FC<MemeCoinCardProps> = ({address, logo, name, content
     const displayImage = metadata?.image || logo;
 
     return (
-        <Link to={`/jetton/${address}`} className="memecoin-card">
+        <Link to={`/frontend_blockchain/jetton/${address}`} className="memecoin-card">
             <img src={displayImage} alt={`${displayName} logo`} className="memecoin-logo"/>
             <div className="memecoin-info">
-                <h3>{displayName}</h3>
-                <p>{address}</p>
-                {error && <p>(wrong metadata)</p>}
+                <h3 className="memecoin-name">{displayName}</h3>
+                <p className="memecoin-address">{address}</p>
+                {error && <p className="memecoin-error">(wrong metadata)</p>}
             </div>
         </Link>
     );
